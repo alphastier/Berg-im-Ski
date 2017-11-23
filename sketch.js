@@ -22,14 +22,20 @@ var yoff = 0;
 var xoff = 0;
 var coreHeight = 460;
 
+var slider;
+
 //img preload
 var img;
 function preload() {
     img = loadImage('ski_1.png');
+    slider = createSlider(0,0.5,0,0);
+    slider.position(50,50);
 }
 
 function setup() {
 	createCanvas(1024,768);
+
+	frameRate(30);
 }
 
 function draw() {
@@ -42,17 +48,29 @@ var graphBot = coreHeight;			//distance below graphic
 var graphWidth = width-graphBorder-graphBorder;
 var c = color(0, 255, 255, 150);
 var alpha_relative = muse.get("/muse/elements/alpha_relative");
-var thresh = dynamicThreshold();	//store dynamic threshold
+var thresh = dynamicThreshold(500);	//store dynamic threshold
 var threshold = thresh.threshold(alphaMap);
 var increaseRise = ypos; 			//map this 0-14 0m-10'000m
 var increaseLower = increaseRise + (increaseRise*0.02);
 var alphaMap = 0;					//mapped with relative alpha values		
 
+console.log(slider.value());
+
 //Map
-alphaMap = map(alpha_relative.mean,0,1,0,14);
+alphaMap = map(slider.value(),0,0.5,0,14);//map(alpha_relative.mean,0,1,0,14);
+
+
 
 //Threshold
 var threshold = thresh.threshold(alphaMap);
+
+fill(200);
+rect(40,40,200,150);
+noStroke();
+fill(0);
+text('Slider.value: ' + slider.value(),50,100);
+text('alphaMap: ' + alphaMap,50,120);
+text('threshold: ' + threshold,50,140);
 
 //if we do better than the threshold
 //move the circle upwards
@@ -81,6 +99,9 @@ strokeWeight(0.1);
 //noFill();
 //noStroke();
 
+stroke(0);
+fill(200);
+strokeWeight(2);
 beginShape();    
   
 //Graphic start
@@ -109,8 +130,8 @@ pop();
 
 //console
 //textSize(25);
-console.log("Coreheight =" + coreHeight,100,40);
-console.log("ypos =" + ypos, 100,80);
-console.log(alphaMap);
+// console.log("Coreheight =" + coreHeight,100,40);
+// console.log("ypos =" + ypos, 100,80);
+// console.log(alphaMap);
 
 }
