@@ -15,13 +15,25 @@ var ypos = 0; //starting position
 var dir = 0; //increasing or decreasing mountain
 var speed = 1; //Speed of mountain growth
 
-var thresh = dynamicThreshold(500); //store dynamic threshold
+//du hattest thresh im draw definiert
+//das hatte zur folge das dynamicThreshold bei jedem 
+//draw neu erstellt wurde und so nicht richtig funktionieren 
+//konnte
+var thresh = dynamicThreshold(); //store dynamic threshold
 
 //creating noise variables
 var yoff = 0;
 var xoff = 0;
+
+//höhe des skis, bzw. des Kerns im Ski
 var coreHeight = 460;
+
+//peak: höhe der bergspitz, die wird sich im Verlauf verändern
 var peak = coreHeight;
+
+//maximale Höhe des Berges
+//je kleiner der Wert desto höher kann der Berg werden (da y=0 der obere fensterrand ist)
+//max peak wird mit einer grünen linie dargestellt zur illustration
 var maxPeak = 50;
 
 var slider;
@@ -29,49 +41,64 @@ var slider;
 //img preload
 var img;
 
+var graphWidth;
+
+//muss man nur einmal rechnen, deshalb von draw() nach hier kopiert. 
+var graphBorder = 112;
+
 function preload() {
     img = loadImage('ski_1.png');
-    slider = createSlider(0.001, 0.5, 0, 0);
-    slider.position(50, 50);
+
 }
 
 function setup() {
     createCanvas(1024, 768);
+
+    //festlegen der alpha werte via slider
+    //dann kann man die werte manuell anpassen und
+    //beobachten wie der Berg reagiert. 
+    slider = createSlider(0.001, 0.5, 0, 0);
+    slider.position(50, 50);
+
+    //graphWidth muss man nur einmal berechnen
+    //deshalb habe ich das ins setup kopiert. 
+    graphWidth = width - graphBorder - graphBorder;
 
     frameRate(30);
 }
 
 function draw() {
 
-    if (frameCount < 10) {
-        background(255);
-    }
+	//damit man besser sieht wie der berg auf die 
+	//daten reagiert, habe ich einen background
+	//eingefügt, denn kannst du dann wieder 
+	//rausnehmen
     background(255);
 
     image(img, 0, 0);
 
     //Variables
-    var graphBorder = 112; //distance to sides
-   // var graphBot = coreHeight; //distance below graphic
-    var graphWidth = width - graphBorder - graphBorder;
+    //viele der variabeln die du hier 
+    //definiert hast, kann man oben, vor der setup funktion, definieren
     var c = color(0, 255, 255, 150);
-    var alpha_relative = muse.get("/muse/elements/alpha_relative");
-
-    var threshold = thresh.threshold(alphaMap);
-    //var increaseRise = ypos; //map this 0-14 0m-10'000m
-   // var increaseLower = increaseRise + (increaseRise * 0.02);
-    var alphaMap = 0; //mapped with relative alpha values		
-
-   // console.log(slider.value());
+   //var alpha_relative = muse.get("/muse/elements/alpha_relative");
 
     //Map
-    alphaMap = map(slider.value(), 0, 0.5, 0, 100); //map(alpha_relative.mean,0,1,0,14);
-
-
+    //damit man besser verfolgen kann wie der berg auf die daten funktioniert
+    //habe ich einen slider integriert mit dem du fiktive 
+    //alpha werte setzen kannst und direkt verfolgen kannst
+    //wie der berg sein verhalten anpasst. 
+   
+    //mappe hier das alpha einfach in einen bereich 0-100, 
+    //damit die direkt als prozent lesen kann. 
+    //ist aber nicht unbedigt nötig.
+    var alphaMap = map(slider.value(), 0, 1, 0, 100); //map(alpha_relative.mean,0,1,0,14);
+	//var alphaMap = map(alpha_relative.mean,0,1,0,100); //mapped with relative alpha values	
 
     //Threshold
     var threshold = thresh.threshold(alphaMap);
 
+    //die verschieden variabeln anzeigen
     fill(200);
     rect(40, 40, 200, 150);
     noStroke();
@@ -96,73 +123,76 @@ function draw() {
     //in- or decrease mountainsize by speed and direction
     peak = peak + dir;
 
+    //sicherstellen das peak nicht oberhalb maxPeak liegt
     if(peak<maxPeak){
     	peak = maxPeak;
     }
+    //sicherstellen das peak nicht unterhalb des skis ist
+    //dies verhindert dass der Berg nach unten wächst.
     if(peak>coreHeight){
     	peak = coreHeight;
     }
+
 
     //Graphic offset
     push();
     translate(graphBorder, 200);
 
+    
+    //linien zeichne für coreHeight, peak, und maxpeak
+    //damit man sehen kann wie das system funktioniert
+    stroke('red');
+    line(0,coreHeight,width,coreHeight);
+    stroke('green');
+    line(0,maxPeak,width,maxPeak);
+    stroke('blue');
+    line(0,peak,width,peak);
+
     //Graphic settings
-    fill(c);
-    strokeWeight(1);
+    
     //stroke(0.1,10);
     //noFill();
     //noStroke();
-
-   
+    
     stroke(0);
-    fill(200);
-    strokeWeight(2);
-
-
-    stroke(255,0,0);
-    line(0,coreHeight,width,coreHeight);
-    stroke(0,255,0);
-    line(0,maxPeak,width,maxPeak);
-    stroke(0,0,255);
-    line(0,peak,width,peak);
-
-    stroke(0);
-
- 
+	fill(c);
+    strokeWeight(0.1);
 
     beginShape();
 
     //Graphic start
+    //habe graphBot entfernet, wusste nicht genau 
+    //wozu er das ist.
     vertex(graphWidth, coreHeight);
     vertex(0, coreHeight);
 
     for (var x = 0; x <= graphWidth; x += 8) {
-
-        //console.log("X =" + x,100,20);
         if (x < 0.5 * graphWidth) {
-        	//var theNoise = noise(xoff+0.1*x, yoff);
         	var theNoise = noise(xoff, yoff);
-        	//console.log('noise a: ' + theNoise);
+
+        	//berechnen wie hoch das y maximal an dieser x-postion
+        	//sein könnte -> localMax
         	var localMax = map(x,0,0.5*graphWidth,coreHeight,peak);
+
+        	//aus localMax und noise werte die y postion berechnen
             var y = map(theNoise, 0, 1, coreHeight, localMax);
-
             vertex(x, y);
-            //coreHeight -= increaseLower;
 
+            //coreHeight -= increaseLower;
         } else {
-        	//var theNoise = noise(xoff+0.1*x, yoff);
         	var theNoise = noise(xoff, yoff);
-        	//console.log('noise b: ' + theNoise);
+        	//berechnen wie hoch das y maximal an dieser x-postion
+        	//sein könnte -> localMax
         	var localMax = map(x,0.5*graphWidth,graphWidth,peak,coreHeight);
+
+        	//aus localMax und noise werte die y postion berechnen
             var y = map(theNoise, 0, 1, coreHeight, localMax);
             vertex(x, y);
             //coreHeight += increaseRise;
         }
-
-        if(coreHeight<0){
-        	//coreHeight = 0;
-        }
+        // if(coreHeight<0){
+        // 	//coreHeight = 0;
+        // }
         xoff += 0.02; //Je kleiner desto glattere Oberfläche
         yoff += 0.02; //Je höher desto nervöser (FPS)
     }
