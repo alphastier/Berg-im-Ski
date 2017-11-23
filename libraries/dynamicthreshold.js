@@ -4,7 +4,7 @@ function dynamicThreshold(_n, _difficulty) {
     var thres = 0;
     var difficulty = _difficulty || 0.85;
     //how many measurements to take into account
-    var n = _n || 1000;
+    var n = _n || 200;
 
     function my() {
 
@@ -24,19 +24,14 @@ function dynamicThreshold(_n, _difficulty) {
 
     my.threshold = function(val) {
         if (val && !isNaN(val)) {
-            console.log('pushing ' + val);
             values.push(val);
         }
         
         while (values.length > n) {
-            console.log('shifting');
             values.shift();
         }
 
         var _mean = dtmean(values);
-        console.log('mean: ' + _mean );
-        console.log('values.length: ' + values.length + ' n: ' + n);
-        
 
         thres = difficulty * _mean;
         return thres;
