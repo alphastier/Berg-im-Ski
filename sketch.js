@@ -14,6 +14,7 @@ var muse = musedata.fake();
 var ypos = 0; //starting position
 var dir = 0; //increasing or decreasing mountain
 var speed = 1; //Speed of mountain growth
+var alphaMa = 0;
 
 //du hattest thresh im draw definiert
 //das hatte zur folge das dynamicThreshold bei jedem 
@@ -36,7 +37,7 @@ var peak = coreHeight;
 //max peak wird mit einer grünen linie dargestellt zur illustration
 var maxPeak = 50;
 
-var slider;
+//var slider;
 
 //img preload
 var img;
@@ -47,8 +48,8 @@ var graphWidth;
 var graphBorder = 112;
 
 function preload() {
-    img = loadImage('ski_1.png');
-
+   // img = loadImage('ski_1.png');
+   img = loadImage('interface_1.png');
 }
 
 function setup() {
@@ -57,14 +58,15 @@ function setup() {
     //festlegen der alpha werte via slider
     //dann kann man die werte manuell anpassen und
     //beobachten wie der Berg reagiert. 
-    slider = createSlider(0.001, 0.5, 0, 0);
-    slider.position(50, 50);
+    //slider = createSlider(0.001, 0.5, 0, 0);
+    //slider.position(50, 50);
 
     //graphWidth muss man nur einmal berechnen
     //deshalb habe ich das ins setup kopiert. 
     graphWidth = width - graphBorder - graphBorder;
 
     frameRate(30);
+    //image(img, 0, 0);
 }
 
 function draw() {
@@ -73,9 +75,9 @@ function draw() {
 	//daten reagiert, habe ich einen background
 	//eingefügt, denn kannst du dann wieder 
 	//rausnehmen
-    background(255);
+    //background(255);
 
-    image(img, 0, 0);
+    //image(img, 0, 0);
 
     //Variables
     //viele der variabeln die du hier 
@@ -92,23 +94,25 @@ function draw() {
     //mappe hier das alpha einfach in einen bereich 0-100, 
     //damit die direkt als prozent lesen kann. 
     //ist aber nicht unbedigt nötig.
-    var alphaMap = map(slider.value(), 0, 1, 0, 100); //map(alpha_relative.mean,0,1,0,14);
+    //var alphaMap = map(slider.value(), 0, 1, 0, 100); //map(alpha_relative.mean,0,1,0,14);
 	//var alphaMap = map(alpha_relative.mean,0,1,0,100); //mapped with relative alpha values	
+    
+    var alphaMap = map(musedata,0,1,0,100); //mapped with relative alpha values  
 
     //Threshold
     var threshold = thresh.threshold(alphaMap);
 
-    //die verschieden variabeln anzeigen
+    /* die verschieden variabeln anzeigen
     fill(200);
     rect(40, 40, 200, 150);
     noStroke();
     fill(0);
     text('Slider.value: ' + slider.value(), 50, 100);
     text('alphaMap: ' + alphaMap, 50, 120);
-    text('threshold: ' + threshold, 50, 140);
+    text('threshold: ' + threshold, 50, 140); */
 
     //if we do better than the threshold
-    //move the circle upwards
+    //move the circle upwards 
     if (alphaMap > threshold) {
         dir = -speed;
     }
@@ -123,7 +127,7 @@ function draw() {
     //in- or decrease mountainsize by speed and direction
     peak = peak + dir;
 
-    //sicherstellen das peak nicht oberhalb maxPeak liegt
+    //sicherstellen dass peak nicht oberhalb maxPeak liegt
     if(peak<maxPeak){
     	peak = maxPeak;
     }
@@ -138,15 +142,19 @@ function draw() {
     push();
     translate(graphBorder, 200);
 
+
+    //höhenlinie für coreHeight
+    //stroke('grey');
+    //line(20,peak,width-20,peak);
     
     //linien zeichne für coreHeight, peak, und maxpeak
     //damit man sehen kann wie das system funktioniert
-    stroke('red');
+   /* stroke('red');
     line(0,coreHeight,width,coreHeight);
     stroke('green');
     line(0,maxPeak,width,maxPeak);
     stroke('blue');
-    line(0,peak,width,peak);
+    line(0,peak,width,peak); */
 
     //Graphic settings
     
@@ -194,7 +202,7 @@ function draw() {
         // 	//coreHeight = 0;
         // }
         xoff += 0.02; //Je kleiner desto glattere Oberfläche
-        yoff += 0.02; //Je höher desto nervöser (FPS)
+        yoff += 0.02;
     }
 
     endShape(CLOSE);
