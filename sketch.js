@@ -53,6 +53,7 @@ function preload() {
 }
 
 function setup() {
+    console.log('setup');
     createCanvas(1024, 768);
 
     //festlegen der alpha werte via slider
@@ -71,6 +72,7 @@ function setup() {
 
 function draw() {
 
+    console.log('draw');
 	//damit man besser sieht wie der berg auf die 
 	//daten reagiert, habe ich einen background
 	//eingefügt, denn kannst du dann wieder 
@@ -83,7 +85,7 @@ function draw() {
     //viele der variabeln die du hier 
     //definiert hast, kann man oben, vor der setup funktion, definieren
     var c = color(0, 255, 255, 150);
-   //var alpha_relative = muse.get("/muse/elements/alpha_relative");
+    //var alpha_relative = muse.get("/muse/elements/alpha_relative");
 
     //Map
     //damit man besser verfolgen kann wie der berg auf die daten funktioniert
@@ -97,7 +99,7 @@ function draw() {
     //var alphaMap = map(slider.value(), 0, 1, 0, 100); //map(alpha_relative.mean,0,1,0,14);
 	//var alphaMap = map(alpha_relative.mean,0,1,0,100); //mapped with relative alpha values	
     
-    var alphaMap = map(musedata,0,1,0,100); //mapped with relative alpha values  
+    var alphaMap = map(muse.getAlpha(),0,1,0,100); //mapped with relative alpha values  
 
     //Threshold
     var threshold = thresh.threshold(alphaMap);
