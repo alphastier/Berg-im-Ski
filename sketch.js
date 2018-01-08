@@ -47,6 +47,9 @@ var graphWidth;
 //muss man nur einmal rechnen, deshalb von draw() nach hier kopiert. 
 var graphBorder = 112;
 
+//graphics object in welches der Berg gezeichnet wird 
+var pg;
+
 function preload() {
    // img = loadImage('ski_1.png');
    img = loadImage('interface_1.png');
@@ -55,6 +58,11 @@ function preload() {
 function setup() {
     console.log('setup');
     createCanvas(1024, 768);
+
+    //erstellen eines graphic objects, in welches der Berg gezeichnet wird
+    pg = createGraphics(width,height);
+    //clear löscht den Hintegrund, bzw, gewährleistet einen transparenten Hintergrund
+    pg.clear();
 
     //festlegen der alpha werte via slider
     //dann kann man die werte manuell anpassen und
@@ -77,9 +85,10 @@ function draw() {
 	//daten reagiert, habe ich einen background
 	//eingefügt, denn kannst du dann wieder 
 	//rausnehmen
-    //background(255);
+    background(255);
 
-    //image(img, 0, 0);
+    //hintergrund zeichnen
+    image(img, 0, 0);
 
     //Variables
     //viele der variabeln die du hier 
@@ -141,8 +150,9 @@ function draw() {
 
 
     //Graphic offset
-    push();
-    translate(graphBorder, 200);
+    //anstatt direkt in den canvas, wird der Berg jetzt in das graphics object gezeichnet.
+    pg.push();
+    pg.translate(graphBorder, 200);
 
 
     //höhenlinie für coreHeight
@@ -164,17 +174,17 @@ function draw() {
     //noFill();
     //noStroke();
     
-    stroke(0);
-	fill(c);
-    strokeWeight(0.1);
+    pg.stroke(0);
+	pg.fill(c);
+    pg.strokeWeight(0.1);
 
-    beginShape();
+    pg.beginShape();
 
     //Graphic start
     //habe graphBot entfernet, wusste nicht genau 
     //wozu er das ist.
-    vertex(graphWidth, coreHeight);
-    vertex(0, coreHeight);
+    pg.vertex(graphWidth, coreHeight);
+    pg.vertex(0, coreHeight);
 
     for (var x = 0; x <= graphWidth; x += 8) {
         if (x < 0.5 * graphWidth) {
@@ -186,7 +196,7 @@ function draw() {
 
         	//aus localMax und noise werte die y postion berechnen
             var y = map(theNoise, 0, 1, coreHeight, localMax);
-            vertex(x, y);
+            pg.vertex(x, y);
 
             //coreHeight -= increaseLower;
         } else {
@@ -197,7 +207,7 @@ function draw() {
 
         	//aus localMax und noise werte die y postion berechnen
             var y = map(theNoise, 0, 1, coreHeight, localMax);
-            vertex(x, y);
+            pg.vertex(x, y);
             //coreHeight += increaseRise;
         }
         // if(coreHeight<0){
@@ -207,9 +217,12 @@ function draw() {
         yoff += 0.02;
     }
 
-    endShape(CLOSE);
+    pg.endShape(CLOSE);
 
-    pop();
+    pg.pop();
+
+    //das graphics object am schluss als bild über die szene zeichnen 
+    image(pg,0,0);
 
     //console
     //textSize(25);
