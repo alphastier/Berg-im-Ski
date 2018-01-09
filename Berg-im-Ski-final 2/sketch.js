@@ -11,47 +11,24 @@ ______ _      _     _   _              _   _               _
 
 //var muse = musedata.connect('http://127.0.0.1:8081');
 var muse = musedata.fake();
-var ypos = 0; //starting position
-var dir = 0; //increasing or decreasing mountain
-var speed = 1; //Speed of mountain growth
+var ypos = 0;           //starting position
+var dir = 0;            //increasing or decreasing mountain
+var speed = 1;          //Speed of mountain growth
 var alphaMa = 0;
-
-//du hattest thresh im draw definiert
-//das hatte zur folge das dynamicThreshold bei jedem 
-//draw neu erstellt wurde und so nicht richtig funktionieren 
-//konnte
 var thresh = dynamicThreshold(); //store dynamic threshold
-
-//creating noise variables
-var yoff = 0;
-var xoff = 0;
-
-//höhe des skis, bzw. des Kerns im Ski
-var coreHeight = 460;
-
-//peak: höhe der bergspitz, die wird sich im Verlauf verändern
-var peak = coreHeight;
-
+var yoff = 0;           //creating noise variables
+var xoff = 0;           //creating noise variables
+var coreHeight = 460;   //höhe des skis, bzw. des Kerns im Ski
+var peak = coreHeight;  //peak: höhe der bergspitz, die wird sich im Verlauf verändern
 //maximale Höhe des Berges
 //je kleiner der Wert desto höher kann der Berg werden (da y=0 der obere fensterrand ist)
 //max peak wird mit einer grünen linie dargestellt zur illustration
 var maxPeak = 50;
-
-//var slider;
-
-//img preload
-var img;
-
-var graphWidth;
-
-//muss man nur einmal rechnen, deshalb von draw() nach hier kopiert. 
-var graphBorder = 112;
-
-//graphics object in welches der Berg gezeichnet wird 
-var pg;
-
-//freeze bis start gedrückt
-var freeze = true;
+var img;                //img preload
+var graphWidth; 
+var graphBorder = 50;
+var pg;                 //graphics object in welches der Berg gezeichnet wird 
+var freeze = true;      //freeze bis start gedrückt
 
 function startGame() {
     var freeze = false;
@@ -64,7 +41,6 @@ function freezeGame() {
 }
 
 function preload() {
-   // img = loadImage('ski_1.png');
    img = loadImage('interface_1.png');
 }
 
@@ -72,8 +48,9 @@ function setup() {
     console.log('setup');
     createCanvas(1024, 768);
 
+    graphWidth = width - graphBorder - graphBorder;
     //erstellen eines graphic objects, in welches der Berg gezeichnet wird
-    pg = createGraphics(width,height);
+    pg = createGraphics(graphWidth,height);
     //clear löscht den Hintegrund, bzw, gewährleistet einen transparenten Hintergrund
     pg.clear();
 
@@ -83,9 +60,7 @@ function setup() {
     slider = createSlider(0.001, 0.5, 0, 0);
     slider.position(50, 50);
 
-    //graphWidth muss man nur einmal berechnen
-    //deshalb habe ich das ins setup kopiert. 
-    graphWidth = width - graphBorder - graphBorder;
+    
 
     frameRate(30);
     //image(img, 0, 0);
@@ -97,7 +72,6 @@ function setup() {
     freezeButton = createButton('freeze');
     freezeButton.position(200, 200);
     freezeButton.mousePressed(freezeGame);   
-
 }
 
 function draw() {
@@ -175,7 +149,7 @@ function draw() {
         pg.push();
 
     //pg.translate(graphBorder, 200);
-    pg.translate(0,-132);
+    pg.translate(graphBorder,-132);
 
     //höhenlinie für coreHeight
     //stroke('grey');
@@ -223,7 +197,7 @@ function draw() {
         	var theNoise = noise(xoff, yoff);
         	//berechnen wie hoch das y maximal an dieser x-postion
         	//sein könnte -> localMax
-        	var localMax = map(x,0.5*graphWidth,graphWidth,peak,coreHeight);
+        	var localMax = map(x,0.5*graphWidth, graphWidth, peak, coreHeight);
 
         	//aus localMax und noise werte die y postion berechnen
             var y = map(theNoise, 0, 1, coreHeight, localMax);
@@ -242,9 +216,11 @@ function draw() {
     pg.pop();
 
     //das graphics object am schluss als bild über die szene zeichnen 
-    if (freeze = false) {
+    /*if (freeze = false) {
         image(pg,0,0);
-    }
+    } */
+
+    image(pg,0,0);
     //console
     //textSize(25);
     // console.log("Coreheight =" + coreHeight,100,40);
