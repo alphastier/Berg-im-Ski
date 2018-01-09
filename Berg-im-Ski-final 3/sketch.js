@@ -233,6 +233,12 @@ function draw() {
     } */
 
     image(pg, 0, 0);
+
+
+    fill('red');
+    noStroke();
+    ellipse(width/2,height/2,200,200);
+
     //console
     //textSize(25);
     // console.log("Coreheight =" + coreHeight,100,40);
