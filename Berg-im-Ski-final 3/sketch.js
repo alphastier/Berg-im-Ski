@@ -25,23 +25,29 @@ var peak = coreHeight;  //peak: höhe der bergspitz, die wird sich im Verlauf ve
 //max peak wird mit einer grünen linie dargestellt zur illustration
 var maxPeak = 50;
 var img;                //img preload
-var graphWidth; 
+var graphWidth;
 var graphBorder = 50;
 var pg;                 //graphics object in welches der Berg gezeichnet wird 
 var freeze = true;      //freeze bis start gedrückt
 
 function startGame() {
-    var freeze = false;
+    //mit var wird eine neue lokale Variabel erstellt, die globale freeze Variabel wird nicht tangiert. 
+    //um die globale freeze Variabel zu ändern musst du 'var' weglassen. 
+    //var freeze = false;
+    freeze = false;
     console.log(freeze);
 }
 
 function freezeGame() {
-    var freeze = true;
+    //mit var wird eine neue lokale Variabel erstellt, die globale freeze Variabel wird nicht tangiert. 
+    //um die globale freeze Variabel zu ändern musst du 'var' weglassen. 
+    //var freeze = true;
+    freeze = true;
     console.log(freeze);
 }
 
 function preload() {
-   img = loadImage('interface_1.png');
+    img = loadImage('interface_1.png');
 }
 
 function setup() {
@@ -49,8 +55,9 @@ function setup() {
     createCanvas(1024, 768);
 
     graphWidth = width - graphBorder - graphBorder;
+    console.log('graphWidth',graphWidth);
     //erstellen eines graphic objects, in welches der Berg gezeichnet wird
-    pg = createGraphics(graphWidth,height);
+    pg = createGraphics(width, height);
     //clear löscht den Hintegrund, bzw, gewährleistet einen transparenten Hintergrund
     pg.clear();
 
@@ -60,7 +67,7 @@ function setup() {
     slider = createSlider(0.001, 0.5, 0, 0);
     slider.position(50, 50);
 
-    
+
 
     frameRate(30);
     //image(img, 0, 0);
@@ -71,16 +78,17 @@ function setup() {
 
     freezeButton = createButton('freeze');
     freezeButton.position(200, 200);
-    freezeButton.mousePressed(freezeGame);   
+    freezeButton.mousePressed(freezeGame);
 }
 
 function draw() {
 
-    console.log('draw');
-	//damit man besser sieht wie der berg auf die 
-	//daten reagiert, habe ich einen background
-	//eingefügt, denn kannst du dann wieder 
-	//rausnehmen
+   // console.log('draw');
+  
+    //damit man besser sieht wie der berg auf die 
+    //daten reagiert, habe ich einen background
+    //eingefügt, denn kannst du dann wieder 
+    //rausnehmen
     background(255);
 
     //hintergrund zeichnen
@@ -97,14 +105,14 @@ function draw() {
     //habe ich einen slider integriert mit dem du fiktive 
     //alpha werte setzen kannst und direkt verfolgen kannst
     //wie der berg sein verhalten anpasst. 
-   
+
     //mappe hier das alpha einfach in einen bereich 0-100, 
     //damit die direkt als prozent lesen kann. 
     //ist aber nicht unbedigt nötig.
     //var alphaMap = map(slider.value(), 0, 1, 0, 100); //map(alpha_relative.mean,0,1,0,14);
-	//var alphaMap = map(alpha_relative.mean,0,1,0,100); //mapped with relative alpha values	
-    
-    var alphaMap = map(muse.getAlpha(),0,1,0,100); //mapped with relative alpha values  
+    //var alphaMap = map(alpha_relative.mean,0,1,0,100); //mapped with relative alpha values	
+
+    var alphaMap = map(muse.getAlpha(), 0, 1, 0, 100); //mapped with relative alpha values  
 
     //Threshold
     var threshold = thresh.threshold(alphaMap);
@@ -116,7 +124,7 @@ function draw() {
     fill(0);
     text('Slider.value: ' + slider.value(), 50, 100);
     text('alphaMap: ' + alphaMap, 50, 120);
-    text('threshold: ' + threshold, 50, 140); 
+    text('threshold: ' + threshold, 50, 140);
 
     //if we do better than the threshold
     //move the mountain upwards 
@@ -135,92 +143,96 @@ function draw() {
     peak = peak + dir;
 
     //sicherstellen dass peak nicht oberhalb maxPeak liegt
-    if(peak<maxPeak){
-    	peak = maxPeak;
+    if (peak < maxPeak) {
+        peak = maxPeak;
     }
     //sicherstellen das peak nicht unterhalb des skis ist
     //dies verhindert dass der Berg nach unten wächst.
-    if(peak>coreHeight){
-    	peak = coreHeight;
+    if (peak > coreHeight) {
+        peak = coreHeight;
     }
+    if (freeze == false) {
 
-    //Graphic offset
-    //anstatt direkt in den canvas, wird der Berg jetzt in das graphics object gezeichnet.
+        //Graphic offset
+        //anstatt direkt in den canvas, wird der Berg jetzt in das graphics object gezeichnet.
         pg.push();
 
-    //pg.translate(graphBorder, 200);
-    pg.translate(graphBorder,-132);
+        //pg.translate(graphBorder, 200);
+        pg.translate(graphBorder, -132);
 
-    //höhenlinie für coreHeight
-    //stroke('grey');
-    //line(20,peak,width-20,peak);
-    
-    //linien zeichne für coreHeight, peak, und maxpeak
-    //damit man sehen kann wie das system funktioniert
-   /* stroke('red');
-    line(0,coreHeight,width,coreHeight);
-    stroke('green');
-    line(0,maxPeak,width,maxPeak);
-    stroke('blue');
-    line(0,peak,width,peak); */
+        //höhenlinie für coreHeight
+        //stroke('grey');
+        //line(20,peak,width-20,peak);
 
-    //Graphic settings
-    
-    //stroke(0.1,10);
-    //noFill();
-    //noStroke();
-    
-    pg.stroke(0);
-	pg.fill(c);
-    pg.strokeWeight(0.1);
+        //linien zeichne für coreHeight, peak, und maxpeak
+        //damit man sehen kann wie das system funktioniert
+        /* stroke('red');
+         line(0,coreHeight,width,coreHeight);
+         stroke('green');
+         line(0,maxPeak,width,maxPeak);
+         stroke('blue');
+         line(0,peak,width,peak); */
 
-    pg.beginShape();
+        //Graphic settings
 
-    //Graphic start
-    pg.vertex(graphWidth, coreHeight);
-    pg.vertex(0, coreHeight);
+        //stroke(0.1,10);
+        //noFill();
+        //noStroke();
 
-    for (var x = 0; x <= graphWidth; x += 8) {
-        if (x < 0.5 * graphWidth) {
-        	var theNoise = noise(xoff, yoff);
+        pg.stroke(0);
+        pg.fill(c);
+        pg.strokeWeight(0.1);
 
-        	//berechnen wie hoch das y maximal an dieser x-postion
-        	//sein könnte -> localMax
-        	var localMax = map(x,0,0.5*graphWidth,coreHeight,peak);
+        pg.beginShape();
 
-        	//aus localMax und noise werte die y postion berechnen
-            var y = map(theNoise, 0, 1, coreHeight, localMax);
-            pg.vertex(x, y);
+        //Graphic start
+        pg.vertex(graphWidth, coreHeight);
+        pg.vertex(0, coreHeight);
 
-            //coreHeight -= increaseLower;
-        } else {
-        	var theNoise = noise(xoff, yoff);
-        	//berechnen wie hoch das y maximal an dieser x-postion
-        	//sein könnte -> localMax
-        	var localMax = map(x,0.5*graphWidth, graphWidth, peak, coreHeight);
+        for (var x = 0; x < graphWidth; x += 8) {
+            if (x < 0.5 * graphWidth) {
+                var theNoise = noise(xoff, yoff);
 
-        	//aus localMax und noise werte die y postion berechnen
-            var y = map(theNoise, 0, 1, coreHeight, localMax);
-            pg.vertex(x, y);
-            //coreHeight += increaseRise;
+                //berechnen wie hoch das y maximal an dieser x-postion
+                //sein könnte -> localMax
+                var localMax = map(x, 0, 0.5 * graphWidth, coreHeight, peak);
+
+                //aus localMax und noise werte die y postion berechnen
+                var y = map(theNoise, 0, 1, coreHeight, localMax);
+                pg.vertex(x, y);
+
+                //coreHeight -= increaseLower;
+            } else {
+                var theNoise = noise(xoff, yoff);
+                //berechnen wie hoch das y maximal an dieser x-postion
+                //sein könnte -> localMax
+                var localMax = map(x, 0.5 * graphWidth, graphWidth, peak, coreHeight);
+
+                //aus localMax und noise werte die y postion berechnen
+                var y = map(theNoise, 0, 1, coreHeight, localMax);
+
+                pg.vertex(x, y);
+                //coreHeight += increaseRise;
+            }
+            // if(coreHeight<0){
+            // 	//coreHeight = 0;
+            // }
+            xoff += 0.02; //Je kleiner desto glattere Oberfläche
+            yoff += 0.02;
         }
-        // if(coreHeight<0){
-        // 	//coreHeight = 0;
-        // }
-        xoff += 0.02; //Je kleiner desto glattere Oberfläche
-        yoff += 0.02;
+
+        pg.endShape(CLOSE);
+
+        pg.pop();
+
     }
-
-    pg.endShape(CLOSE);
-
-    pg.pop();
 
     //das graphics object am schluss als bild über die szene zeichnen 
     /*if (freeze = false) {
         image(pg,0,0);
     } */
 
-    image(pg,0,0);
+    image(pg, 0, 0);
     //console
     //textSize(25);
     // console.log("Coreheight =" + coreHeight,100,40);
