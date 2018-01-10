@@ -67,7 +67,7 @@ function setup() {
     graphWidth = width - graphBorder - graphBorder;
     console.log('graphWidth',graphWidth);
     //erstellen eines graphic objects, in welches der Berg gezeichnet wird
-    pg = createGraphics(width, height);
+    pg = createGraphics(1024, 768);
     //clear löscht den Hintegrund, bzw, gewährleistet einen transparenten Hintergrund
     pg.clear();
 
@@ -131,6 +131,8 @@ function draw() {
     text("peaCounter: "+peakCounter, 50, 180);
     text("peakSumm: "+peakSumm, 50, 200);
 
+    if (freeze == false) {
+
     //if we do better than the threshold
     //move the mountain upwards 
     if (alphaMap > threshold) {
@@ -156,7 +158,7 @@ function draw() {
     if (peak > coreHeight) {
         peak = coreHeight;
     }
-    if (freeze == false) {
+
 
         //Graphic offset
         //anstatt direkt in den canvas, wird der Berg jetzt in das graphics object gezeichnet.
