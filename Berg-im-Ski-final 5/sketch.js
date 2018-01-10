@@ -40,6 +40,9 @@ var dashboardState = 'dashboard';
 var realtimeState = 'realtime';
 var state = freezeState;
 
+var horseLeft = 100;
+var horseTop = 100;
+
 function preload() {
     img = loadImage('background.png');
     dashImg = loadImage('dashboard.png');
@@ -48,6 +51,9 @@ function preload() {
 function setup() {
     console.log('setup');
     createCanvas(1024, 768);
+
+    horseLeft = width-130;
+    horseTop = height -70;
 
     graphWidth = width - graphBorder - graphBorder;
     console.log('graphWidth', graphWidth);
@@ -84,12 +90,7 @@ function draw() {
 function drawFreezeState() {
     background(255);
     image(img, 0, 0);
-
-    // die verschieden variabeln anzeigen
-    fill(200);
-   // rect(40, 40, 200, 170);
-    noStroke();
-    fill(0);
+    drawHorseshoe(horseLeft,horseTop);
 }
 
 function drawRealtime() {
@@ -215,6 +216,9 @@ function drawRealtime() {
     peakSumm += peak;
     //peakCounter + 1;
     peakCounter += 1;
+
+
+    drawHorseshoe(horseLeft,horseTop);
 }
 
 
@@ -321,3 +325,39 @@ function startButtonPressed() {
     }
     console.log('state: ' + state);
 }
+
+function drawHorseshoe(left, top) {
+    //console.log('drawHorseshoe');
+    var horseshoe = muse.get('/muse/elements/horseshoe');
+    // console.log(horseshoe);
+
+    var vals = [horseshoe.leftEar, horseshoe.leftFront, horseshoe.rightFront, horseshoe.rightEar];
+    var gap = 20;
+    var d = 10;
+    push();
+    translate(left, top);
+
+    //leftEar
+    for (var i = 0; i < vals.length; i++) {
+      var x = i * gap
+      var sensorVal = vals[i];
+      var col = getColor(sensorVal);
+      noStroke();
+      fill(col);
+      ellipse(x, 0, d, d);
+    }
+
+    pop();
+
+  }
+
+
+  function getColor(val) {
+    if (val == 1) {
+      return 'green';
+    } else if (val == 2) {
+      return 'orange';
+    } else if (val >= 3) {
+      return 'red';
+    } else return 'black';
+  }
