@@ -18,7 +18,7 @@ var thetaMap = 0;
 var thresh = dynamicThreshold(); //store dynamic threshold
 var yoff = 0;           //creating noise variables
 var xoff = 0;           //creating noise variables
-var coreHeight = 460;   //höhe des skis, bzw. des Kerns im Ski
+var coreHeight = 647;   //höhe des skis, bzw. des Kerns im Ski
 var peak = coreHeight;  //peak: höhe der bergspitz, die wird sich im Verlauf verändern
 //maximale Höhe des Berges
 //je kleiner der Wert desto höher kann der Berg werden (da y=0 der obere fensterrand ist)
@@ -26,7 +26,7 @@ var maxPeak = 50;
 var img;                //img preload
 var dashImg;
 var graphWidth;
-var graphBorder = 50;
+var graphBorder = 120;
 var pg;                 //graphics object in welches der Berg gezeichnet wird 
 //var freeze = true;      //freeze bis start gedrückt
 var duration = 30;
@@ -87,7 +87,7 @@ function drawFreezeState() {
 
     // die verschieden variabeln anzeigen
     fill(200);
-    rect(40, 40, 200, 170);
+   // rect(40, 40, 200, 170);
     noStroke();
     fill(0);
 }
@@ -151,7 +151,8 @@ function drawRealtime() {
     pg.push();
 
     //pg.translate(graphBorder, 200);
-    pg.translate(graphBorder, -132);
+   // pg.translate(graphBorder, -132);
+    pg.translate(graphBorder-5,0);
 
     pg.stroke(0);
     pg.fill(c);
@@ -238,7 +239,7 @@ function createMountain(base, h) {
     graphics.push();
 
     //pg.translate(graphBorder, 200);
-    graphics.translate(graphBorder, -132);
+    graphics.translate(graphBorder-5,0);
 
     graphics.stroke(0);
     graphics.fill(c);
