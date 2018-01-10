@@ -61,6 +61,11 @@ function setup() {
     startButton = createButton('start');
     startButton.position(40, 700);
     startButton.mousePressed(startButtonPressed);
+
+    console.log('startButton');
+    console.log(startButton);
+   // startButton.setAttribute('value','hans');
+  
 }
 
 function draw() {
@@ -200,6 +205,7 @@ function drawRealtime() {
 
     if (timer == 0) {
         state = dashboardState;
+        startButton.elt.innerText = 'Replay';
     }
 
     //peakSumm + peak;
@@ -291,6 +297,7 @@ function resetValues() {
     peak = coreHeight;
     maxPeak = 50;
     thresh = dynamicThreshold();
+    startButton.elt.innerText = 'Start';
     pg = createGraphics(1024, 768);
     //clear löscht den Hintegrund, bzw, gewährleistet einen transparenten Hintergrund
     pg.clear();
